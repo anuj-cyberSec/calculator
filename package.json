@@ -1,0 +1,14 @@
+{
+  "name": "cli-calculator",
+  "version": "1.0.0",
+  "description": "A basic command-line calculator in Node.js",
+  "main": "calculator.js",
+  "bin": {
+    "calculator": "./calculator.js"
+  },
+  "scripts": {
+    "start": "node calculator.js"
+  },
+  "author": "",
+  "license": "MIT"
+} 
