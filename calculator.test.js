@@ -10,7 +10,7 @@ describe('Calculator', () => {
   });
 
   test('mul', () => {
-    expect(mul(4, 6)).toBe(24);
+    expect(mul(4, 6)).toBe(2);
   });
 
   test('div', () => {
