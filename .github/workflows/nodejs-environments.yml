@@ -68,21 +68,21 @@ jobs:
 
           # Install missing tools if needed
           if ! command -v git >/dev/null 2>&1; then
-            sudo apt-get update
-            sudo apt-get install -y git
+            echo "${{ secrets.SSH_PASSWORD }}" | sudo -S apt-get update
+            echo "${{ secrets.SSH_PASSWORD }}" | sudo -S apt-get install -y git
           fi
 
           if ! command -v npm >/dev/null 2>&1; then
             curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-            sudo apt-get install -y nodejs
+            echo "${{ secrets.SSH_PASSWORD }}" | sudo -S apt-get install -y nodejs
           fi
 
           if ! command -v pm2 >/dev/null 2>&1; then
-            npm install -g pm2
+            echo "${{ secrets.SSH_PASSWORD }}" | sudo -S npm install -g pm2
           fi
 
           if ! command -v grep >/dev/null 2>&1; then
-            sudo apt-get install -y grep
+            echo "${{ secrets.SSH_PASSWORD }}" | sudo -S apt-get install -y grep
           fi
 
           # Ensure calculator directory is a git repo
