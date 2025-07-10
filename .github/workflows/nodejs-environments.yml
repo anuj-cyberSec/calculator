@@ -32,14 +32,15 @@ jobs:
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no azureuser@20.244.43.49 << 'EOF'
 
           #checking if directory exists
-          if [ ! -d "/home/azureuser/calculator" ]; then
-            echo "Git Repository does not exist. Cloning..."
-            git clone https://github.com/anuj-cyberSec/calculator.git  /home/azureuser/calculator
+          if [ -d "/home/azureuser/calculator/.git" ]; then
+            echo "Git Repository exist. Pulling latest changes ..."
+            cd /home/azureuser/calculator && git pull
 
           else
-            echo "Git Repository exists. Pulling latest changes..."
-            cd /home/azureuser/calculator && git pull
-            
+            echo "Git Repository does not exist. Cloning..."
+            rm -rf /home/azureuser/calculator
+            # Cloning the repository into the specified directory
+            git clone https://github.com/anuj-cyberSec/calculator.git  /home/azureuser/calculator
           fi
 
           cd /home/azureuser/calculator
