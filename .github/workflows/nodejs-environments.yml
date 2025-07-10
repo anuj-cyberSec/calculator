@@ -29,7 +29,7 @@ jobs:
       - name : Deploying to vm
         run: |
           echo "Deploying to VM..."
-          sshpass -p ${{ secrets.VM_PASSWORD }} ssh -o StrictHostKeyChecking=no azureuser@20.244.43.49 << 'EOF'
+          sshpass -p "${{ secrets.VM_PASSWORD }}"" ssh -o StrictHostKeyChecking=no azureuser@20.244.43.49 << 'EOF'
 
           #checking if directory exists
           if [ ! -d "/home/azureuser/calculator" ]; then
