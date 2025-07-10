@@ -1,98 +1,3 @@
-# name: Node.js Environments CI
-
-# on:
-#   push:
-#     branches:
-#       - main
-#       - dev
-#       - staging
-
-# jobs:
-#   dev:
-#     runs-on: ubuntu-latest
-#     environment: dev
-#     if: github.ref == 'refs/heads/dev'
-#     steps:
-#       - uses: actions/checkout@v3
-
-#       - name: Set up Node.js
-#         uses: actions/setup-node@v3
-#         with:
-#           node-version: '18'
-      
-#       - name: Install dependencies
-#         run: npm ci
-      
-#       - name: Run testing of calculator
-#         run: npm run test
-      
-#       - name : Deploying to vm
-#         run: |
-#           echo "Deploying to VM..."
-#           sshpass -p ${{ secrets.VM_PASSWORD }} ssh -o StrictHostKeyChecking=no azureuser@20.244.43.49 << 'EOF'
-
-#           #checking if directory exists
-#           if [ ! -d "/home/azureuser/calculator" ]; then
-#             echo "Git Repository does not exist. Cloning..."
-#             git clone https://github.com/anuj-cybersec/calculator.git  /home/azureuser/calculator
-
-#           else
-#             echo "Git Repository exists. Pulling latest changes..."
-#             cd /home/azureuser/calculator && git pull
-            
-#           fi
-
-#           cd /home/azureuser/calculator
-#           echo "Installing dependencies..."
-#           npm ci
-
-#           # if calculator is not running with pm2 then start it otherwise restart it
-#           if ! pm2 list | grep -q "calculator"; then
-#             echo "Starting calculator with PM2..."
-#             pm2 start calculator.js --name calculator
-#           else
-#             echo "Restarting calculator with PM2..."
-#             pm2 restart calculator
-#           fi
-        
-#       EOF
-
-
-      
-
-#   staging:
-#     runs-on: ubuntu-latest
-#     environment: staging
-    
-#     if: github.ref == 'refs/heads/staging'
-#     steps:
-#       - uses: actions/checkout@v3
-#       - name: Set up Node.js
-#         uses: actions/setup-node@v3
-#         with:
-#           node-version: '18'
-#       - name: Install dependencies
-#         run: npm install
-#       - name: Run calculator in staging
-#         run: node calculator.js add 1 2
-
-#   prod:
-#     runs-on: ubuntu-latest
-#     environment: prod
-    
-#     if: github.ref == 'refs/heads/main'
-#     steps:
-#       - uses: actions/checkout@v3
-#       - name: Set up Node.js
-#         uses: actions/setup-node@v3
-#         with:
-#           node-version: '18'
-#       - name: Install dependencies
-#         run: npm install
-#       - name: Run calculator in prod
-#         run: node calculator.js add 1 2 
-
-
 name: Node.js Environments CI
 
 on:
@@ -114,32 +19,34 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-
+      
       - name: Install dependencies
         run: npm ci
-
+      
       - name: Run testing of calculator
         run: npm run test
-
-      - name: Deploying to VM
+      
+      - name : Deploying to vm
         run: |
           echo "Deploying to VM..."
-          sshpass -p ${{ secrets.VM_PASSWORD }} ssh -o StrictHostKeyChecking=no azureuser@20.244.43.49 << EOF
+          sshpass -p ${{ secrets.VM_PASSWORD }} ssh -o StrictHostKeyChecking=no azureuser@20.244.43.49 << 'EOF'
 
-          # Checking if directory exists
+          #checking if directory exists
           if [ ! -d "/home/azureuser/calculator" ]; then
             echo "Git Repository does not exist. Cloning..."
-            git clone https://github.com/anuj-cybersec/calculator.git /home/azureuser/calculator
+            git clone https://github.com/anuj-cybersec/calculator.git  /home/azureuser/calculator
+
           else
             echo "Git Repository exists. Pulling latest changes..."
             cd /home/azureuser/calculator && git pull
+            
           fi
 
           cd /home/azureuser/calculator
           echo "Installing dependencies..."
           npm ci
 
-          # Check if calculator is running with pm2; if not, start it
+          # if calculator is not running with pm2 then start it otherwise restart it
           if ! pm2 list | grep -q "calculator"; then
             echo "Starting calculator with PM2..."
             pm2 start calculator.js --name calculator
@@ -147,5 +54,40 @@ jobs:
             echo "Restarting calculator with PM2..."
             pm2 restart calculator
           fi
+        
+      EOF
 
-        EOF
+
+      
+
+  staging:
+    runs-on: ubuntu-latest
+    environment: staging
+    
+    if: github.ref == 'refs/heads/staging'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm install
+      - name: Run calculator in staging
+        run: node calculator.js add 1 2
+
+  prod:
+    runs-on: ubuntu-latest
+    environment: prod
+    
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: npm install
+      - name: Run calculator in prod
+        run: node calculator.js add 1 2 
