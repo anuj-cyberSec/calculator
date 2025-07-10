@@ -31,7 +31,7 @@ jobs:
           echo "Deploying to VM..."
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no azureuser@20.244.43.49 << 'EOF'
 
-          export PATH=\$PATH:/usr/local/bin/:\$HOME/.npm-global/bin
+          export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:\$HOME/.npm-global/bin
           #checking if directory exists
           if [ -d "/home/azureuser/calculator/.git" ]; then
             echo "Git Repository exist. Pulling latest changes ..."
