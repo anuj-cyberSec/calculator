@@ -29,7 +29,31 @@ jobs:
       - name : Deploying to vm
         run: |
           echo "Deploying to VM..."
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no azureuser@20.244.43.49 "mkdir -p /home/azureuser/calculator && cd /home/azureuser/calculator && git pull && npm install && pm2 restart calculator"
+          sshpass -p ${{ secrets.VM_PASSWORD }} ssh -o StrictHostKeyChecking=no azureuser@20.244.43.49 << 'EOF'
+
+          #checking if directory exists
+          if [ ! -d "/home/azureuser/calculator" ]; then
+            echo "Git Repository does not exist. Cloning..."
+            git clone https://github.com/anuj-cybersec/calculator.git /home/azureuser/calculator.git /home/azureuser/calculator
+
+          else
+            echo "Git Repository exists. Pulling latest changes..."
+            cd /home/azureuser/calculator && git pull
+            
+          fi
+
+          cd /home/azureuser/calculator
+          echo "Installing dependencies..."
+          npm ci
+
+          # if calculator is not running with pm2 then start it otherwise restart it
+          if [ ! pm2 list | grep -q "calculator" ]; then
+            echo "Starting calculator with PM2..."
+            pm2 start calculator.js --name calculator
+          else
+            echo "Restarting calculator with PM2..."
+            pm2 restart calculator
+          fi
 
 
       
