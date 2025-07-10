@@ -34,7 +34,7 @@ jobs:
           #checking if directory exists
           if [ ! -d "/home/azureuser/calculator" ]; then
             echo "Git Repository does not exist. Cloning..."
-            git clone https://github.com/anuj-cybersec/calculator.git  /home/azureuser/calculator
+            git clone https://github.com/anuj-cyberSec/calculator.git  /home/azureuser/calculator
 
           else
             echo "Git Repository exists. Pulling latest changes..."
