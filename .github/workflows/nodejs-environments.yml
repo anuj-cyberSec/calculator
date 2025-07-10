@@ -26,22 +26,73 @@ jobs:
       - name: Run testing of calculator
         run: npm run test
       
-      - name : Deploying to vm
+      # - name : Deploying to vm
+      #   run: |
+      #     echo "Deploying to VM..."
+      #     sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no azureuser@20.244.43.49 << 'EOF'
+
+      #     export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:\$HOME/.npm-global/bin
+      #     #checking if directory exists
+      #     if [ -d "/home/azureuser/calculator/.git" ]; then
+      #       echo "Git Repository exist. Pulling latest changes ..."
+      #       cd /home/azureuser/calculator && git pull
+
+      #     else
+      #       echo "Git Repository does not exist. Cloning..."
+      #       rm -rf /home/azureuser/calculator
+      #       # Cloning the repository into the specified directory
+      #       git clone https://github.com/anuj-cyberSec/calculator.git  /home/azureuser/calculator
+      #     fi
+
+      #     cd /home/azureuser/calculator
+      #     echo "Installing dependencies..."
+      #     npm install
+
+      #     # if calculator is not running with pm2 then start it otherwise restart it
+      #     if ! pm2 list | grep -q "calculator"; then
+      #       echo "Starting calculator with PM2..."
+      #       pm2 start calculator.js --name calculator
+      #     else
+      #       echo "Restarting calculator with PM2..."
+      #       pm2 restart calculator
+      #     fi
+        
+      #     EOF
+      - name: Deploying to vm
         run: |
           echo "Deploying to VM..."
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no azureuser@20.244.43.49 << 'EOF'
 
+          # Ensure /usr/bin and /usr/local/bin are in PATH
           export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:\$HOME/.npm-global/bin
-          #checking if directory exists
+
+          # Install missing tools if needed
+          if ! command -v git >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y git
+          fi
+
+          if ! command -v npm >/dev/null 2>&1; then
+            curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+            sudo apt-get install -y nodejs
+          fi
+
+          if ! command -v pm2 >/dev/null 2>&1; then
+            npm install -g pm2
+          fi
+
+          if ! command -v grep >/dev/null 2>&1; then
+            sudo apt-get install -y grep
+          fi
+
+          # Ensure calculator directory is a git repo
           if [ -d "/home/azureuser/calculator/.git" ]; then
             echo "Git Repository exist. Pulling latest changes ..."
             cd /home/azureuser/calculator && git pull
-
           else
             echo "Git Repository does not exist. Cloning..."
             rm -rf /home/azureuser/calculator
-            # Cloning the repository into the specified directory
-            git clone https://github.com/anuj-cyberSec/calculator.git  /home/azureuser/calculator
+            git clone https://github.com/anuj-cyberSec/calculator.git /home/azureuser/calculator
           fi
 
           cd /home/azureuser/calculator
@@ -56,9 +107,8 @@ jobs:
             echo "Restarting calculator with PM2..."
             pm2 restart calculator
           fi
-        
-          EOF
 
+          EOF
 
       
 
