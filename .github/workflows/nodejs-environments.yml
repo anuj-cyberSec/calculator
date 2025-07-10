@@ -45,7 +45,7 @@ jobs:
 
           cd /home/azureuser/calculator
           echo "Installing dependencies..."
-          npm ci
+          npm install
 
           # if calculator is not running with pm2 then start it otherwise restart it
           if ! pm2 list | grep -q "calculator"; then
