@@ -25,6 +25,12 @@ jobs:
       
       - name: Run testing of calculator
         run: npm run test
+      
+      - name : Deploying to vm
+        run: |
+          echo "Deploying to VM..."
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no azureuser@20.244.43.49 "cd /home/azureuser/calculator && git pull && npm install && pm2 restart calculator"
+
 
       
 
@@ -48,6 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: prod
     
+    if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v3
       - name: Set up Node.js
